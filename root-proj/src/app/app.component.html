@@ -1,0 +1,41 @@
+<p-button label="FROM APP" [style]="buttonStyle" [hidden]="random != 1" (click)="onClickFromComponent()"></p-button>
+
+<app-banner></app-banner>
+<app-left-panel></app-left-panel>
+
+<p-table [columns]="cols" [value]="products" [tableStyle]="{ 'min-width': '50rem' }">
+    <ng-template pTemplate="header" let-columns>
+        <tr>
+            <th *ngFor="let col of columns">
+                {{ col.header }}
+            </th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-columns="columns">
+        <tr>
+            <td *ngFor="let col of columns">
+                <!-- Check if the column is 'edit' or 'delete' to display buttons instead of data -->
+                <ng-container *ngIf="col.field === 'edit'; else notEdit">
+                    <button (click)="editProduct(rowData)">Edit</button>
+                </ng-container>
+
+                <ng-template #notEdit>
+                    <ng-container *ngIf="col.field === 'delete'; else notDelete">
+                        <button (click)="deleteProduct(rowData)">Delete</button>
+                    </ng-container>
+
+                    <ng-template #notDelete>
+                        {{ rowData[col.field] }}
+                    </ng-template>
+
+                </ng-template>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<h1>{{ output }}</h1>
+
+<micro-root *axLazyElement="elementMicroFE; errorTemplate: error">
+</micro-root>
+<ng-template #error>Failed to load micro-roo</ng-template>
